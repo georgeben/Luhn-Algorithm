@@ -5,20 +5,24 @@ const check_button = document.getElementById('check_button');
 const result_textview = document.getElementById('result_textview');
 
 const validateCC = (card_number) =>{
-    //Checks if the card number entered is valid
-    let sum = 0;
-    let double = false;
+    //Checks if the card number entered is valid using the Luhn's algorithm
+    let sum = 0; //Sets the sum of card digits to zero initially
 
-    console.log("Last number", card_number[card_number.length -1]);
-    console.log(card_number.length -1);
+    /*Flag to keep track of the digit to double, which is every 
+    second digit starting from the righ. */
+    let double = false; 
+
     for(let i = card_number.length -1; i >= 0; i--){
-        let current_number = parseInt(card_number.charAt(i));
+        //Get the current digit 
+        let current_digit = parseInt(card_number.charAt(i));
         if(double){
-            if((current_number *= 2) > 9) current_number -= 9;
+            /*Multiply the digit by 2 and check if it is greater than 9,
+             if it is, subtract 9 from the product */
+            if((current_digit *= 2) > 9) current_digit -= 9;
         }
 
-        sum += current_number;
-        double = !double;
+        sum += current_digit;
+        double = !double; //Invert the flag
     }
     return (sum % 10) == 0;
 }
@@ -28,14 +32,17 @@ const validate_card = (event) =>{
     let card_number = card_input.value;
 
     //Sanity checks
-    if (card_number < 0 || card_number == 0 || card_number.length < 16){
+    if (card_number < 0 || card_number == 0){
         alert("Please enter a valid number");
         return;
     } 
-    console.log("Card number", card_number);
+
+    if(card_number.length < 16){
+        alert("Please enter at least a 16 digit number");
+        return;
+    }
 
     let status = validateCC(card_number);
-    console.log("After validation", status)
 
     result_textview.innerHTML = status ? "Card is vaild" : "Card is not valid";
 }
